@@ -1,0 +1,22 @@
+# Environment variables
+.env
+
+# Virtual environment
+.backendenv/
+
+# Developments specific folders
+instance/
+
+
+# Python cache files
+__pycache__/
+
+# Database
+*.db
+
+# IDE settings
+.vscode/
+
+# Logs or temporary files (if any)
+*.log
+*.tmp
