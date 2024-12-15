@@ -12,7 +12,9 @@ instance/
 __pycache__/
 
 # Database
+migrations/
 *.db
+*.sqlite
 
 # IDE settings
 .vscode/

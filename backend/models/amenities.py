@@ -11,8 +11,8 @@ class Amenity(db.Model):
     description = db.Column(db.Text(), nullable=False)
     price_per_hour = db.Column(db.Float(), nullable=False)
     address = db.Column(db.String(255), nullable=False)
-    category_id = db.Column(db.Integer(), ForeignKey("categories.id"), nullable=False)
-    owner_id = db.Column(db.Integer(), ForeignKey("users.id"), nullable=False)
+    category_id = db.Column(db.Integer(), db.ForeignKey("categories.id"), nullable=False)
+    owner_id = db.Column(db.Integer(), db.ForeignKey("users.id"), nullable=False)
 
     calendar = db.relationship("Availability", back_populates="amenity", cascade="all, delete-orphan")
     images = db.relationship("Media", back_populates="amenity", cascade="all, delete-orphan")

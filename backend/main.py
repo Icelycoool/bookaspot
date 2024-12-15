@@ -1,6 +1,9 @@
 from flask import Flask
 from flask_restx import Api, Resource
+from flask_migrate import Migrate
 from exts import db
+
+from models import User, Amenity, Availability, Booking, Category, Media, Review
 
 
 def create_app(config):
@@ -8,6 +11,7 @@ def create_app(config):
     app.config.from_object(config)
 
     db.init_app(app)
+    migrate = Migrate(app, db)
 
     api = Api(app,
               title='Bookaspot',
