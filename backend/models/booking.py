@@ -16,4 +16,3 @@ class Booking(db.Model):
 
     user = db.relationship("User")
     amenity = db.relationship("Amenity", back_populates="bookings")
-    payment = db.relationship("Payment", back_populates="booking", uselist=False, cascade="all, delete-orphan")

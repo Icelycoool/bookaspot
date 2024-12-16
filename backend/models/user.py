@@ -16,7 +16,7 @@ class User(db.Model):
     verified = db.Column(db.Boolean, default=False)
     is_owner = db.Column(db.Boolean, default=False)
 
-    amenity = db.relationship("Amenity", back_populates="owner", cascade="all, delete-orphan")
+    amenities = db.relationship("Amenity", back_populates="owner", cascade="all, delete-orphan")
     reviews = db.relationship("Review", back_populates="user", cascade="all, delete-orphan")
 
     def save(self):
