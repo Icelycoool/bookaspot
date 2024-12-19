@@ -1,3 +1,4 @@
+import re
 from datetime import timedelta
 from flask import request, jsonify, make_response
 from flask_jwt_extended import JWTManager, create_access_token, create_refresh_token,  jwt_required, get_jwt_identity, get_jwt
@@ -35,23 +36,23 @@ class SignupResource(Resource):
         """Create a new User"""
         data = request.get_json()
 
+        if not re.match(r"[^@]+@[^@]+\.[^@]+", data.get("email", "")):
+                return make_response(jsonify({"message": "Invalid email address"}), 400)
+
         # Check required fields
         required_fields = ["firstname", "lastname", "email", "password", "password_confirmation"]
         for field in required_fields:
             if not data.get(field):
                 return  make_response(jsonify({"message": f"{field} is required"}), 400)
 
-        # check if username already exists
-        username = data.get("username")
-        db_user = User.query.filter_by(username=username).first()
-        if db_user:
-            return make_response(jsonify({"message": "Username already exists"}), 400)
+        # check if user already exists
+        existing_user = User.query.filter(
+            (User.username == data.get("username")) |
+            (User.email == data.get("email"))
+        ).first()
 
-        # check if email already exists
-        email = data.get("email")
-        db_user = User.query.filter_by(email=email).first()
-        if db_user:
-            return make_response(jsonify({"message": f"An account with {email} already exists"}), 400)
+        if existing_user:
+            return make_response(jsonify({"message": f"An account with {email} or {username} already exists"}), 400)
 
         # check password confirmation
         password = data.get("password")
@@ -166,7 +167,7 @@ class RefreshResource(Resource):
 @auth_ns.route('/logout')
 class LogoutResource(Resource):
     jwt_blocklist = set()
-    
+
     @jwt_required()
     def post(self):
         """Logs out a User"""

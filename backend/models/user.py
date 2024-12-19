@@ -24,21 +24,11 @@ class User(db.Model):
         db.session.add(self)
         db.session.commit()
 
-    def update(self, firstname=None, lastname=None, username=None, email=None,  password=None, profile=None):
+    def update(self, **kwargs):
         """Method to Update user information"""
-        if firstname:
-            self.firstname = firstname
-        if lastname:
-            self.lastname = lastname
-        if username:
-            self.username = username
-        if password:
-            self.password = password
-        if email:
-            self.email = email
-        if profile:
-            self.profile = profile
-        db.session.add(self)
+        for key, value in kwargs.items():
+            if hasattr(self, key) and value is not None:
+                setattr(self, key, value)
         db.session.commit()
 
     def delete(self):

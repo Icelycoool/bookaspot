@@ -20,3 +20,20 @@ class Amenity(db.Model):
     owner = db.relationship("User", back_populates="amenities")
     bookings = db.relationship("Booking", back_populates="amenity", cascade="all, delete-orphan")
     reviews = db.relationship("Review", back_populates="amenity", cascade="all, delete-orphan")
+
+    def save(self):
+        """Method to save an amenity"""
+        db.session.add(self)
+        db.session.commit()
+
+    def update(self, **kwargs):
+        """Method to update amenity information"""
+        for key, value in kwargs.items():
+            if hasattr(self, key) and values is not None:
+                setattr(self, key, value)
+        db.session.commit()
+
+    def delete(self):
+        """Method to delete an amenity"""
+        db.session.delete(self)
+        db.session.commit()
