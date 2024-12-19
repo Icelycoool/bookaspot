@@ -24,7 +24,7 @@ class User(db.Model):
         db.session.add(self)
         db.session.commit()
 
-    def update(self, firstname=None, lastname=None, username=None, password=None, profile=None):
+    def update(self, firstname=None, lastname=None, username=None, email=None,  password=None, profile=None):
         """Method to Update user information"""
         if firstname:
             self.firstname = firstname
@@ -34,6 +34,8 @@ class User(db.Model):
             self.username = username
         if password:
             self.password = password
+        if email:
+            self.email = email
         if profile:
             self.profile = profile
         db.session.add(self)

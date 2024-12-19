@@ -1,3 +1,4 @@
+from datetime import timedelta
 from flask import request, jsonify, make_response
 from flask_jwt_extended import JWTManager, create_access_token, create_refresh_token,  jwt_required, get_jwt_identity, get_jwt
 from flask_restx import fields, Resource, Namespace
@@ -29,9 +30,9 @@ login_model = auth_ns.model("Login", {
 
 @auth_ns.route("/signup")
 class SignupResource(Resource):
-    """User Signup Resource"""
     @auth_ns.expect(signup_model)
     def post(self):
+        """Create a new User"""
         data = request.get_json()
 
         # Check required fields
@@ -84,11 +85,52 @@ class SignupResource(Resource):
             }
         }), 201)
 
+@auth_ns.route("/user")
+class ProfileResource(Resource):
+
+    @auth_ns.marshal_with(signup_model)
+    @jwt_required()
+    def get(self):
+        """Get User by id"""
+        user_id = get_jwt_identity()
+        user = User.query.filter_by(id=user_id).first_or_404()
+        return user, 200
+
+    @jwt_required()
+    def put(self):
+        """Updates User by id"""
+        user_id = get_jwt_identity()
+        user_to_update = User.query.filter_by(id=user_id).first_or_404()
+        data = request.get_json()
+        
+        # Check username if provided
+        new_username = data.get("username")
+        if new_username and User.query.filter_by(username=new_username).first():
+            return make_response(jsonify({"message": "Username already etaken"}), 400)
+
+        user_to_update.update(
+            firstname = data.get("firstname"),
+            lastname = data.get("lastname"),
+            username = new_username,
+            email = data.get("email"),
+            profile = data.get("profile")
+        )
+
+        return make_response(jsonify({"message": "User details have been updated successfully"}), 200)
+
+    @jwt_required()
+    def delete(self):
+        """Deletes a User"""
+        user_id = get_jwt_identity()
+        user_to_delete = User.query.filter_by(id=user_id).first_or_404()
+        user_to_delete.delete()
+        return make_response(jsonify({"message": "User deleted successfully"}), 200)
+
 @auth_ns.route('/login')
 class LoginResource(Resource):
-    """User Login Resource"""
     @auth_ns.expect(login_model)
     def post(self):
+        """Logs in a User"""
         data = request.get_json()
 
         username = data.get("username")
@@ -101,7 +143,7 @@ class LoginResource(Resource):
         # Check if the user exits
         db_user = User.query.filter_by(username=username).first()
         if db_user and check_password_hash(db_user.password, password):
-            access_token = create_access_token(identity=db_user.id)
+            access_token = create_access_token(identity=db_user.id, expires_delta=timedelta(hours=1))
             refresh_token = create_refresh_token(identity=db_user.id)
             return make_response(jsonify({
                 "access_token": access_token,
@@ -113,9 +155,9 @@ class LoginResource(Resource):
 
 @auth_ns.route('/refresh')
 class RefreshResource(Resource):
-    """Refreshes the access token"""
     @jwt_required(refresh=True)
     def post(self):
+        """Refreshes the access token"""
         current_user = get_jwt_identity()
         new_access_token = create_access_token(identity=current_user, fresh=False)
         return make_response(jsonify({"access_token": new_access_token}), 200)
@@ -123,11 +165,11 @@ class RefreshResource(Resource):
 
 @auth_ns.route('/logout')
 class LogoutResource(Resource):
-    """Logs out a User"""
     jwt_blocklist = set()
-
+    
     @jwt_required()
     def post(self):
+        """Logs out a User"""
         jti = get_jwt()["jti"]
         self.jwt_blocklist.add(jti)
         return make_response(jsonify({"message": "Successfully logged out"}), 201)
