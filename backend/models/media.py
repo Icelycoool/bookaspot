@@ -12,3 +12,13 @@ class Media(db.Model):
     type = db.Column(db.Enum("image", "video", name="media_type"), nullable=False)
 
     amenity = db.relationship("Amenity", back_populates="images")
+
+    def save(self):
+        """Method to save a media"""
+        db.session.add(self)
+        db.session.commit()
+
+    def delete(self):
+        """Method to delete a media"""
+        db.session.delete(self)
+        db.session.commit()

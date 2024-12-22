@@ -29,7 +29,7 @@ class Amenity(db.Model):
     def update(self, **kwargs):
         """Method to update amenity information"""
         for key, value in kwargs.items():
-            if hasattr(self, key) and values is not None:
+            if hasattr(self, key) and value is not None:
                 setattr(self, key, value)
         db.session.commit()
 

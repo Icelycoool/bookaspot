@@ -1,12 +1,21 @@
 import re
+import os
+import time
 from datetime import timedelta
-from flask import request, jsonify, make_response
+from flask import request, jsonify, make_response, current_app
 from flask_jwt_extended import JWTManager, create_access_token, create_refresh_token,  jwt_required, get_jwt_identity, get_jwt
 from flask_restx import fields, Resource, Namespace
 from werkzeug.security import generate_password_hash, check_password_hash
+from werkzeug.utils import secure_filename
 from models import User
 
+
 auth_ns = Namespace("auth", description = "User Authentication")
+
+
+ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
+def allowed_file(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 
 # Serilization models
@@ -102,19 +111,48 @@ class ProfileResource(Resource):
         """Updates User by id"""
         user_id = get_jwt_identity()
         user_to_update = User.query.filter_by(id=user_id).first_or_404()
-        data = request.get_json()
+
+        # Handle form data and file upload
+        profile = request.files.get("profile")
+        data = request.form.to_dict()
         
         # Check username if provided
         new_username = data.get("username")
         if new_username and User.query.filter_by(username=new_username).first():
-            return make_response(jsonify({"message": "Username already etaken"}), 400)
+            return make_response(jsonify({"message": "Username already taken"}), 400)
+
+
+        # Handle Profile image upload
+        image_path = None
+        if profile and allowed_file(profile.filename):
+            filename = secure_filename(profile.filename)
+            # Create unique filename using user_id and timestamp
+            file_extension = filename.rsplit('.', 1)[1].lower()
+            unique_filename = f"profile_{user_id}_{int(time.time())}.{file_extension}"
+            
+            # Ensure upload directory exists
+            upload_dir = os.path.join(current_app.root_path, 'static', 'profile_images')
+            os.makedirs(upload_dir, exist_ok=True)
+            
+            # Save the file
+            file_path = os.path.join(upload_dir, unique_filename)
+            profile.save(file_path)
+            
+            # Store the relative path in the database
+            image_path = f"/static/profile_images/{unique_filename}"
+            
+            # Delete old profile image if it exists
+            if user_to_update.profile:
+                old_image_path = os.path.join(current_app.root_path, user_to_update.profile.lstrip('/'))
+                if os.path.exists(old_image_path):
+                    os.remove(old_image_path)
 
         user_to_update.update(
             firstname = data.get("firstname"),
             lastname = data.get("lastname"),
             username = new_username,
             email = data.get("email"),
-            profile = data.get("profile")
+            profile = image_path if image_path else user_to_update.profile
         )
 
         return make_response(jsonify({"message": "User details have been updated successfully"}), 200)
