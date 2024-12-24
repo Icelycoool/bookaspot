@@ -14,3 +14,13 @@ class Review(db.Model):
 
     user = db.relationship("User", back_populates="reviews")
     amenity = db.relationship("Amenity", back_populates="reviews")
+
+    def save(self):
+        """Method to save a review"""
+        db.session.add(self)
+        db.session.commit()
+
+    def delete(self):
+        """Method to delete a review"""
+        db.session.delete(self)
+        db.session.commit()
