@@ -128,4 +128,4 @@ class AmenityResource(Resource):
         # Delete the amenity
         amenity.delete()
 
-        return {"message": "Amenity deleted successfully"}, 200
+        return make_response(jsonify({"message": "Amenity deleted successfully"}), 200)

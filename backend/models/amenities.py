@@ -14,7 +14,6 @@ class Amenity(db.Model):
     category_id = db.Column(db.Integer(), db.ForeignKey("categories.id"), nullable=False)
     owner_id = db.Column(db.Integer(), db.ForeignKey("users.id"), nullable=False)
 
-    calendar = db.relationship("Availability", back_populates="amenity", cascade="all, delete-orphan")
     images = db.relationship("Media", back_populates="amenity", cascade="all, delete-orphan")
     category = db.relationship("Category", back_populates="amenities")
     owner = db.relationship("User", back_populates="amenities")
