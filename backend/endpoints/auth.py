@@ -45,11 +45,8 @@ class SignupResource(Resource):
         """Create a new User"""
         data = request.get_json()
 
-        if not re.match(r"[^@]+@[^@]+\.[^@]+", data.get("email", "")):
-                return make_response(jsonify({"message": "Invalid email address"}), 400)
-
         # Check required fields
-        required_fields = ["firstname", "lastname", "email", "password", "password_confirmation"]
+        required_fields = ["firstname", "lastname", "username", "email", "password", "password_confirmation"]
         for field in required_fields:
             if not data.get(field):
                 return  make_response(jsonify({"message": f"{field} is required"}), 400)
@@ -61,7 +58,10 @@ class SignupResource(Resource):
         ).first()
 
         if existing_user:
-            return make_response(jsonify({"message": f"An account with {email} or {username} already exists"}), 400)
+            return make_response(jsonify({"message": f"User already exists!"}), 400)
+
+        if not re.match(r"[^@]+@[^@]+\.[^@]+", data.get("email", "")):
+                return make_response(jsonify({"message": "Invalid email address"}), 400)
 
         # check password confirmation
         password = data.get("password")

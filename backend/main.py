@@ -1,4 +1,5 @@
 from flask import Flask
+from flask_cors import CORS
 from flask_jwt_extended import JWTManager
 from flask_restx import Api, Resource
 from flask_migrate import Migrate
@@ -11,6 +12,8 @@ from endpoints import auth_ns, amenities_ns, reviews_ns, booking_ns
 def create_app(config):
     app = Flask(__name__)
     app.config.from_object(config)
+
+    CORS(app, resources={r"/api/*": {"origins": "http://localhost:3000"}})
 
     db.init_app(app)
     migrate = Migrate(app, db)
@@ -26,7 +29,7 @@ def create_app(config):
     api.add_namespace(reviews_ns, path='/api/reviews')
     api.add_namespace(booking_ns, path='/api/booking')
 
-    @api.route('/hello')
+    @api.route('/api/hello')
     class Hello(Resource):
         def get(self):
             return {'message': 'Hello World!'}

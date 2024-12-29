@@ -2,10 +2,11 @@
 .env
 
 # Virtual environment
-.backendenv/
+*env/
 
 # Developments specific folders
 instance/
+static/
 
 
 # Python cache files

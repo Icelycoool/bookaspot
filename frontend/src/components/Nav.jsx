@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { Link } from "react-router-dom";
 import logo from "../assets/logo.svg";
 
 const Nav = () => {
@@ -14,18 +15,22 @@ const Nav = () => {
         {/* Logo */}
         <div className="flex items-center space-x-2">
           <img className="w-10 h-10" src={logo} alt="Bookaspot logo" />
-          <a className="text-primary text-2xl font-bold" href="#">Bookaspot</a>
+          <Link className="text-primary text-2xl font-bold" to="/">Bookaspot</Link>
         </div>
 
         {/* Links (Desktop View) */}
         <div className="hidden md:flex flex-1 justify-center space-x-8">
-          <a href="#discover" className="hover:text-secondary">About</a>
-          <a href="#discover" className="hover:text-secondary">Saved Amenities</a>
-          <a href="#discover" className="hover:text-secondary">Discover</a>
+          <Link to="/about" className="hover:text-secondary">About</Link>
+          <Link to="/saved-amenities" className="hover:text-secondary">Saved Amenities</Link>
+          <Link to="/discover" className="hover:text-secondary">Discover</Link>
         </div>
         <div className="hidden md:flex space-x-4">
-          <button className="px-6 py-2 bg-secondary text-offwhite rounded-full shadow-sm hover:bg-secondaryHover focus:ring-2 focus:ring-secondaryHover-500">Sign Up</button>
-          <button className="px-6 py-2 border bg-primary text-offwhite rounded-full shadow-sm hover:bg-primaryHover focus:ring-2 focus:ring-primaryHover-500">Login</button>
+          <Link to="/signup">
+            <button className="px-6 py-2 bg-secondary text-offwhite rounded-full shadow-sm hover:bg-secondaryHover focus:ring-2 focus:ring-secondaryHover-500">Sign Up</button>
+          </Link>
+          <Link to="/login">
+            <button className="px-6 py-2 border bg-primary text-offwhite rounded-full shadow-sm hover:bg-primaryHover focus:ring-2 focus:ring-primaryHover-500">Login</button>
+          </Link>
         </div>
 
         {/* Hamburger Menu (Mobile View) */}
@@ -55,9 +60,11 @@ const Nav = () => {
       {/* Mobile Menu */}
       {isOpen && (
         <div className="md:hidden bg-offwhite-500 shadow-md">
-          <a href="#discover" className="block px-4 py-2 hover:bg-secondary" onClick={toggleMenu}> Discover</a>
-          <a href="#signup" className="block px-4 py-2 hover:bg-secondary" onClick={toggleMenu}>Sign Up</a>
-          <a href="#login" className="block px-4 py-2 hover:bg-secondary" onClick={toggleMenu}>Login</a>
+          <Link to="/about" className="block px-4 py-2 hover:bg-secondary" onClick={toggleMenu}>About</Link>
+          <Link to="/saved-amenities" className="block px-4 py-2 hover:bg-secondary" onClick={toggleMenu}> Saved Amenities</Link>
+          <Link to="/discover" className="block px-4 py-2 hover:bg-secondary" onClick={toggleMenu}> Discover</Link>
+          <Link to="/signup" className="block px-4 py-2 hover:bg-secondary" onClick={toggleMenu}>Sign Up</Link>
+          <Link to="/login" className="block px-4 py-2 hover:bg-secondary" onClick={toggleMenu}>Login</Link>
         </div>
       )}
     </nav>
