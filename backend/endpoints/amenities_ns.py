@@ -1,7 +1,9 @@
 from flask import request, jsonify, make_response
 from flask_restx import fields, Resource, Namespace
 from flask_jwt_extended import jwt_required, get_jwt_identity
-from models import Amenity, User, Category, Media
+from models import Amenity, User, Category, Media, Review
+
+
 from .images import save_image, delete_image_file
 
 amenities_ns = Namespace("Amenities", description="Amenities management")
@@ -27,10 +29,28 @@ amenities_model = amenities_ns.model('Amenity', {
 
 @amenities_ns.route('')
 class AmenitiesListResource(Resource):
-    @amenities_ns.marshal_list_with(amenities_model)
+    # @amenities_ns.marshal_list_with(amenities_model)
     def get(self):
         """Lists all amenities"""
-        return Amenity.query.all(), 200
+        amenities = Amenity.query.all()
+        response = []
+        for amenity in amenities:
+            avg_rating = sum(review.rating for review in amenity.reviews) / len(amenity.reviews) if amenity.reviews else 0
+            images = [media.url for media in amenity.images]
+
+            response.append({
+                "id": amenity.id,
+                "name": amenity.name,
+                "description": amenity.description,
+                "price_per_hour": amenity.price_per_hour,
+                "address": amenity.address,
+                "category_id": amenity.category_id,
+                "owner_id": amenity.owner_id,
+                "images": images,
+                "rating": avg_rating
+            })
+
+        return response, 200
 
     @jwt_required()
     @amenities_ns.expect(amenities_model)
@@ -76,7 +96,7 @@ class AmenityResource(Resource):
         user_id = get_jwt_identity()
 
         if amenity.owner_id != user_id:
-            amenity_ns.abort(403, message="Not authorized to update this amenity")
+            amenities_ns.abort(403, message="Not authorized to update this amenity")
 
         # Update basic amenity data
         amenity_data = request.form.to_dict()
@@ -129,3 +149,17 @@ class AmenityResource(Resource):
         amenity.delete()
 
         return make_response(jsonify({"message": "Amenity deleted successfully"}), 200)
+
+@amenities_ns.route('/categories')
+class AmenityResourceCategory(Resource):
+    def get(self):
+        """Fetches all the categories"""
+        categories = Category.query.all()
+        category_names = [
+            {
+                "id": category.id,
+                "name": category.name,
+            }
+            for category in categories
+        ]
+        return category_names, 200

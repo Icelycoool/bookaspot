@@ -5,16 +5,15 @@ import { FaSearch } from "react-icons/fa";
 const Hero = () => {
     return (
         <div className='container m-auto mt-28'>
-            <section className="text-center bg-cover bg-center h-[300px] md:h-[400px] lg:h-[500px] rounded-xl overflow-hidden mx-4" style={{ backgroundImage: `url(${hero})` }}>
-                <div className="text-white py-16">
-                    <h1 className="text-3xl md:text-4xl font-bold">
+            <section className="relative text-center bg-cover bg-center h-[300px] md:h-[400px] lg:h-[500px] rounded-xl overflow-hidden mx-4" style={{ backgroundImage: `url(${hero})` }}>
+                <div className="absolute inset-0 bg-accent bg-opacity-35"></div>
+                <div className="relative z-10 text-white py-16">
+                    <h1 className="text-3xl md:text-4xl font-bold mt-24 text-offwhite">
                         Find your perfect spot with Bookaspot
                     </h1>
-                    <p className="mt-2">Discover amenities around you from the comfort of your house!</p>
+                    <p className="mt-2 text-offwhite" >Discover amenities around you from the comfort of your house!</p>
                 </div>
             </section>
-
-
 
             {/* Search Component */}
             <div className="relative -mt-12 z-20 flex justify-center px-4">
@@ -26,7 +25,6 @@ const Hero = () => {
                 </div>
             </div>
         </div>
-        
   );
 };
 

@@ -18,12 +18,6 @@ const Nav = () => {
           <Link className="text-primary text-2xl font-bold" to="/">Bookaspot</Link>
         </div>
 
-        {/* Links (Desktop View) */}
-        <div className="hidden md:flex flex-1 justify-center space-x-8">
-          <Link to="/about" className="hover:text-secondary">About</Link>
-          <Link to="/saved-amenities" className="hover:text-secondary">Saved Amenities</Link>
-          <Link to="/discover" className="hover:text-secondary">Discover</Link>
-        </div>
         <div className="hidden md:flex space-x-4">
           <Link to="/signup">
             <button className="px-6 py-2 bg-secondary text-offwhite rounded-full shadow-sm hover:bg-secondaryHover focus:ring-2 focus:ring-secondaryHover-500">Sign Up</button>
@@ -60,9 +54,6 @@ const Nav = () => {
       {/* Mobile Menu */}
       {isOpen && (
         <div className="md:hidden bg-offwhite-500 shadow-md">
-          <Link to="/about" className="block px-4 py-2 hover:bg-secondary" onClick={toggleMenu}>About</Link>
-          <Link to="/saved-amenities" className="block px-4 py-2 hover:bg-secondary" onClick={toggleMenu}> Saved Amenities</Link>
-          <Link to="/discover" className="block px-4 py-2 hover:bg-secondary" onClick={toggleMenu}> Discover</Link>
           <Link to="/signup" className="block px-4 py-2 hover:bg-secondary" onClick={toggleMenu}>Sign Up</Link>
           <Link to="/login" className="block px-4 py-2 hover:bg-secondary" onClick={toggleMenu}>Login</Link>
         </div>

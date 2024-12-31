@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, send_from_directory
 from flask_cors import CORS
 from flask_jwt_extended import JWTManager
 from flask_restx import Api, Resource
@@ -34,5 +34,8 @@ def create_app(config):
         def get(self):
             return {'message': 'Hello World!'}
 
+    @app.route('/api/<filename>')
+    def uploaded_file(filename):
+        return send_from_directory('static/amenities_images', filename)
 
     return app
