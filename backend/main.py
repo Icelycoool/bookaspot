@@ -34,8 +34,8 @@ def create_app(config):
         def get(self):
             return {'message': 'Hello World!'}
 
-    @app.route('/api/<filename>')
-    def uploaded_file(filename):
-        return send_from_directory('static/amenities_images', filename)
+    @app.route('/api/<folder>/<filename>')
+    def uploaded_file(folder, filename):
+        return send_from_directory(f'static/{folder}', filename)
 
     return app

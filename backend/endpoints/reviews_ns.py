@@ -1,4 +1,4 @@
-from flask import request
+from flask import request, make_response, jsonify
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from flask_restx import fields, Resource, Namespace
 from models import Review, Amenity
@@ -47,7 +47,6 @@ class ReviewListResource(Resource):
 
 @reviews_ns.route('/amenity/<int:amenity_id>')
 class AmenityReviewsResource(Resource):
-    @reviews_ns.marshal_with(review_model)
     def get(self, amenity_id):
         """Get all reviews for a specific amenity"""
         # Verify amenity exists
@@ -57,4 +56,14 @@ class AmenityReviewsResource(Resource):
         if not reviews:
             return make_response(jsonify({'message': 'No reviews found for this amenity'}), 404)
 
-        return reviews
+        review_response = [
+            {
+                "user_id": review.user_id,
+                "username": review.user.username,
+                "rating": review.rating,
+                "comment": review.comment
+            }
+            for review in reviews
+        ]
+
+        return review_response, 200

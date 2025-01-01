@@ -28,8 +28,8 @@ const Categories = () => {
 
 
   return (
-    <div className="container mx-auto my-16 px-4">
-      <h2 className="text-2xl text-primary font-bold mb-8 mt-28">Explore Categories</h2>
+    <div className="container mx-auto px-4">
+      <h2 className="text-2xl text-primary font-bold mb-8 mt-14">Explore Categories</h2>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
         {/* Scrollable Categories */}

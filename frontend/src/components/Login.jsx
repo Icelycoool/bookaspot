@@ -31,6 +31,10 @@ const Login = () => {
         setMessage(null);
         try {
             const response = await axios.post(`${apiUrl}/api/auth/login`, formData);
+            const { access_token, username: user, profile: profile } = response.data
+			localStorage.setItem("token", access_token)
+            localStorage.setItem("username", user)
+            localStorage.setItem("profile", profile)
             setMessage(response.data.message);
             navigate("/");
         } catch (error) {

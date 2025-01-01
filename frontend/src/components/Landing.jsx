@@ -4,7 +4,7 @@ import Amenitiescard from "./Amenitiescard"
 
 const Landing = () => {
     return (
-    <div className="mb-48">
+    <div className="mb-32">
             <Hero />
             <Categories />
             <Amenitiescard />

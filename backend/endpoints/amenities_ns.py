@@ -88,6 +88,27 @@ class AmenitiesListResource(Resource):
 
 @amenities_ns.route('/<int:id>')
 class AmenityResource(Resource):
+
+    def get(self, id):
+        amenity = Amenity.query.get_or_404(id)
+
+        avg_rating = (
+            sum(review.rating for review in amenity.reviews) / len(amenity.reviews)
+            if amenity.reviews else 0
+        )
+        images = [media.url for media in amenity.images]
+        response = {
+            "name": amenity.name,
+            "description": amenity.description,
+            "price_per_hour": amenity.price_per_hour,
+            "address": amenity.address,
+            "category_id": amenity.category_id,
+            "owner_id": amenity.owner_id,
+            "images": images,
+            "rating": avg_rating,
+        }
+        return response, 200
+
     @jwt_required()
     @amenities_ns.marshal_with(amenities_model)
     def put(self, id):

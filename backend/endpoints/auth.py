@@ -139,7 +139,7 @@ class ProfileResource(Resource):
             profile.save(file_path)
             
             # Store the relative path in the database
-            image_path = f"/static/profile_images/{unique_filename}"
+            image_path = f"{unique_filename}"
             
             # Delete old profile image if it exists
             if user_to_update.profile:
@@ -187,7 +187,8 @@ class LoginResource(Resource):
             return make_response(jsonify({
                 "access_token": access_token,
                 "refresh_token": refresh_token,
-                "username": username
+                "username": username,
+                "profile": db_user.profile
             }), 201)
 
         return make_response(jsonify({"message": "Invalid username or password"}), 404)

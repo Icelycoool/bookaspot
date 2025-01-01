@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import axios from "axios";
 
 const Amenitiescard = () => {
@@ -21,14 +22,14 @@ const Amenitiescard = () => {
 
   return (
     <div className="container m-auto">
-      <h2 className="text-2xl text-primary font-bold mb-8 mt-28">Discover Amenities</h2>
+      <h2 className="text-2xl text-primary font-bold mb-8 mt-16">Discover Amenities</h2>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 p-4">
         {amenities.map((amenity) => (
           <div key={amenity.id} className="bg-white rounded-lg shadow-md overflow-hidden">
             <div className="relative h-48">
               {amenity.images && amenity.images.length > 0 ? (
                 <img
-                  src={`${apiUrl}/api/${amenity.images[0]}`}
+                  src={`${apiUrl}/api/amenities_images/${amenity.images[0]}`}
                   alt={amenity.name || "Amenity"}
                   className="w-full h-full object-cover"
                 />
@@ -39,7 +40,12 @@ const Amenitiescard = () => {
               )}
             </div>
             <div className="p-4">
-              <h3 className="text-lg font-bold text-gray-800">{amenity.name || "Unknown"}</h3>
+              <h3 className="text-lg font-bold text-gray-800"><Link
+                  to={`amenities/${amenity.id}`}
+                  className="text-primary hover:underline"
+                >
+                  {amenity.name || "Unknown"}
+                </Link></h3>
               <p className="text-sm text-gray-600">
                 {amenity.description || "No description available"}
               </p>

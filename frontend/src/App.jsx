@@ -1,6 +1,7 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Nav from "./components/Nav"
 import Landing from "./components/Landing";
+import AmenityDetails from "./components/AmenityDetails";
 import Login from "./components/Login";
 import Signup from "./components/Signup";
 import { Footer } from "./components/Footer";
@@ -11,6 +12,7 @@ const App = () => {
             <Nav />
             <Routes>
                 <Route path="/" element={<Landing />} />
+                <Route path="/amenities/:id" element={<AmenityDetails />} />
                 <Route path="/login" element={<Login />} />
                 <Route path="/signup" element={ <Signup />} />
             </Routes>
