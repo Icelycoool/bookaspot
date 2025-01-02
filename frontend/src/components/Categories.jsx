@@ -31,7 +31,7 @@ const Categories = () => {
     <div className="container mx-auto px-4">
       <h2 className="text-2xl text-primary font-bold mb-8 mt-14">Explore Categories</h2>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 p-4">
         {/* Scrollable Categories */}
           {categories.length > 0 ? (
             categories.map((category) => (

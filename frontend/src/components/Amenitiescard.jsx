@@ -21,7 +21,7 @@ const Amenitiescard = () => {
   }, [apiUrl]);
 
   return (
-    <div className="container m-auto">
+    <div className="container m-auto px-4">
       <h2 className="text-2xl text-primary font-bold mb-8 mt-16">Discover Amenities</h2>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 p-4">
         {amenities.map((amenity) => (

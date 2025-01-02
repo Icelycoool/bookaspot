@@ -55,16 +55,18 @@ const Nav = () => {
             </>
           ) : (
             <>
-              <div className="flex items-center space-x-4">
-                {userProfile === null ? (
-                  <img
-                    src={`${apiUrl}/api/profile_images/${userProfile}`}
-                    alt="User Profile"
-                    className="w-12 h-12 rounded-full"
-                  />
-                ) : (
-                  <img src={placeholderProfile} className="w-12 h-12 rounded-full"/>
-                )}
+                <div className="flex items-center space-x-4">
+                <Link to="/profile">
+                  {userProfile && userProfile !== "null" ? (
+                    <img
+                      src={`${apiUrl}/api/profile_images/${userProfile}`}
+                      alt="User Profile"
+                      className="w-12 h-12 rounded-full"
+                    />
+                  ) : (
+                    <img src={placeholderProfile} className="w-12 h-12 rounded-full"/>
+                  )}
+                </Link>
                 <button
                   onClick={handleLogout}
                   className="px-6 py-2 bg-secondary text-offwhite rounded-full shadow-sm hover:bg-secondaryHover focus:ring-2 focus:ring-secondaryHover-500"
