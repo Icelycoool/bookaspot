@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 
 const AmenityDetails = () => {
   const { id } = useParams();
+  const navigate = useNavigate();
   const apiUrl = import.meta.env.VITE_API_BASE_URL;
+
   const [amenity, setAmenity] = useState(null);
   const [reviews, setReviews] = useState([]);
   const [newReview, setNewReview] = useState({
@@ -26,26 +28,27 @@ const AmenityDetails = () => {
 
   const handleReviewSubmit = (e) => {
     e.preventDefault();
-
     const reviewData = {
       amenity_id: id,
       rating: newReview.rating,
       comment: newReview.comment,
     };
 
-    // Submit review
     axios
-      .post(`${apiUrl}/api/reviews`,
-        reviewData, {
+      .post(`${apiUrl}/api/reviews`, reviewData, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
       })
       .then((response) => {
         setReviews((prevReviews) => [...prevReviews, response.data]);
-        setNewReview({ comment: "", rating: 0 }); // Reset form
+        setNewReview({ comment: "", rating: 0 });
       })
       .catch((error) => console.error("Error submitting review:", error));
+  };
+
+  const handleBookNow = () => {
+    navigate(`/bookings/new?amenityId=${id}&pricePerHour=${amenity.price_per_hour}`);
   };
 
   if (!amenity) return <div>Loading...</div>;
@@ -77,7 +80,14 @@ const AmenityDetails = () => {
                 {amenity.rating ? amenity.rating.toFixed(1) : "N/A"}
               </span>
             </div>
-            <button className="mt-4 bg-secondary text-offwhite py-2 px-6 rounded hover:bg-secondaryHover">
+            {/* Display the price per hour */}
+            <div className="mt-4 text-xl font-semibold text-gray-800">
+              Price per hour: KES{amenity.price_per_hour.toFixed(2)}
+            </div>
+            <button
+              onClick={handleBookNow}
+              className="mt-4 bg-secondary text-offwhite py-2 px-6 rounded hover:bg-secondaryHover"
+            >
               Book Now
             </button>
           </div>
@@ -94,7 +104,9 @@ const AmenityDetails = () => {
                 key={review.id}
                 className="bg-gray-50 p-4 rounded border border-gray-200"
               >
-                <h3 className="text-lg font-semibold first-letter:uppercase">{review.username}</h3>
+                <h3 className="text-lg font-semibold first-letter:uppercase">
+                  {review.username}
+                </h3>
                 <p className="text-sm text-gray-600">{review.comment}</p>
                 <div className="flex items-center space-x-1 mt-2">
                   <span className="text-yellow-500 text-sm">⭐</span>

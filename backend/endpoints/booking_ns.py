@@ -33,8 +33,11 @@ class BookingListResource(Resource):
         serialized_bookings = []
     
         for booking in bookings:
+            booked_amenity = Amenity.query.filter_by(id=booking.amenity_id).first()
             serialized_booking = {
+                'id': booking.id,
                 'amenity_id': booking.amenity_id,
+                'amenity': booked_amenity.name,
                 'start_time': booking.start_time.strftime('%Y-%m-%d %H:%M:%S'),
                 'end_time': booking.end_time.strftime('%Y-%m-%d %H:%M:%S'),
                 'status': booking.status,
@@ -50,7 +53,7 @@ class BookingListResource(Resource):
         """Create a new booking"""
         user_id = get_jwt_identity()
         data = request.get_json()
-
+        
         # Validate the dates
         start_date = datetime.fromisoformat(data['start_date'])
         end_date = datetime.fromisoformat(data['end_date'])
@@ -89,7 +92,7 @@ class BookingListResource(Resource):
 
         new_booking.save()
 
-        return make_response(jsonify({"message": "Booking successful"}), 201)
+        return make_response(jsonify({"message": "Booking successful!"}), 201)
 
 
 @booking_ns.route('/<int:booking_id>')
@@ -133,7 +136,3 @@ class BookingManagementResource(Resource):
         delete_qr_code(booking.qr_code)
         booking.delete()
         return make_response(jsonify({"message": "Booking deleted successfully"}), 200)
-
-
-
-

@@ -51,7 +51,7 @@ const Amenitiescard = () => {
               </p>
               <div className="mt-2 flex justify-between items-center">
                 <span className="text-secondary text-lg font-semibold">
-                  ${amenity.price_per_hour || "0.00"}/hr
+                  KES{amenity.price_per_hour || "0.00"}/hr
                 </span>
                 <div className="flex items-center space-x-1">
                   <span className="text-yellow-500 text-sm">⭐</span>

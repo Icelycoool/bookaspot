@@ -23,7 +23,7 @@ def generate_qr_code(data: str) -> str:
     qr_image.save(file_path)
     
     # Return the relative path that can be stored in the database
-    return os.path.join("static", "bookings_qr", filename)
+    return os.path.join(filename)
 
 def delete_qr_code(filename: str) -> bool:
     """Delete the QR code image with the given filename"""
