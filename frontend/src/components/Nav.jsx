@@ -111,12 +111,15 @@ const Nav = () => {
               <Link to="/login" className="block px-4 py-2 hover:bg-secondary" onClick={toggleMenu}>Login</Link>
             </>
           ) : (
-            <button
-              onClick={handleLogout}
-              className="block w-full px-4 py-2 bg-secondary text-offwhite rounded-full hover:bg-secondaryHover"
-            >
-              Logout
-            </button>
+            <>
+              <Link to="/profile" className="px-4 py-2 block text-center text-primary hover:text-primaryHover hover:underline"> Profile </Link>
+              <button
+                onClick={handleLogout}
+                className="block w-full px-4 py-2 bg-secondary text-offwhite rounded-full hover:bg-secondaryHover"
+              >
+                Logout
+              </button>
+            </>
           )}
         </div>
       )}

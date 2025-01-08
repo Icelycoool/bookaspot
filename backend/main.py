@@ -6,7 +6,7 @@ from flask_migrate import Migrate
 from exts import db
 
 from models import User, Amenity, Booking, Category, Media, Review
-from endpoints import auth_ns, amenities_ns, reviews_ns, booking_ns
+from endpoints import auth_ns, amenities_ns, reviews_ns, booking_ns, search_ns
 
 
 def create_app(config):
@@ -28,6 +28,7 @@ def create_app(config):
     api.add_namespace(amenities_ns, path='/api/amenities')
     api.add_namespace(reviews_ns, path='/api/reviews')
     api.add_namespace(booking_ns, path='/api/booking')
+    api.add_namespace(search_ns, path='/api/search')
 
     @api.route('/api/hello')
     class Hello(Resource):

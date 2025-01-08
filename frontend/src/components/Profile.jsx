@@ -90,7 +90,7 @@ const Profile = () => {
   };
 
   return (
-    <div className="p-4 max-w-4xl mx-auto mt-28">
+    <div className="p-4 max-w-4xl mx-auto mt-32 md:mt-24">
       <h2 className="text-2xl font-bold text-center text-primary mb-4">
         Your Profile
       </h2>

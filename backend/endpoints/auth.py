@@ -188,7 +188,8 @@ class LoginResource(Resource):
                 "access_token": access_token,
                 "refresh_token": refresh_token,
                 "username": username,
-                "profile": db_user.profile
+                "profile": db_user.profile,
+                "owner": db_user.is_owner,
             }), 201)
 
         return make_response(jsonify({"message": "Invalid username or password"}), 404)
