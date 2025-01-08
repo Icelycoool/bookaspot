@@ -13,7 +13,6 @@ static/
 __pycache__/
 
 # Database
-migrations/
 *.db
 *.sqlite
 

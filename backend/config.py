@@ -22,5 +22,7 @@ class DevConfig(Config):
 
 class ProdConfig(Config):
     """Defines production configuration"""
-
-    pass
+    SQLALCHEMY_DATABASE_URI = SQLALCHEMY_DATABASE_URI = config('DATABASE_URL')
+    DEBUG = config("DEBUG", cast=bool)
+    SQLALCHEMY_ECHO = config("ECHO", cast=bool)
+    SQLALCHEMY_TRACK_MODIFICATIONS = config("SQLALCHEMY_TRACK_MODIFICATIONS", cast=bool)

@@ -13,7 +13,7 @@ def create_app(config):
     app = Flask(__name__)
     app.config.from_object(config)
 
-    CORS(app, resources={r"/api/*": {"origins": "http://localhost:3000"}})
+    CORS(app, resources={r"/api/*": {"origins": "https://bookaspot.onrender.com"}})
 
     db.init_app(app)
     migrate = Migrate(app, db)
