@@ -1,47 +1,44 @@
-import React, { useState, useEffect } from "react";
-import axios from "axios";
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
 
 const Profile = () => {
   const apiUrl = import.meta.env.VITE_API_BASE_URL;
   const [user, setUser] = useState({});
   const [formData, setFormData] = useState({});
   const [profileImage, setProfileImage] = useState(null);
-  const [message, setMessage] = useState("");
-  const token = localStorage.getItem("token");
+  const [message, setMessage] = useState('');
+  const token = localStorage.getItem('token');
 
   useEffect(() => {
     const fetchUserData = async () => {
       try {
-        const response = await axios.get("/api/auth/user", {
+        const response = await axios.get('/api/auth/user', {
           headers: {
-            Authorization: `Bearer ${token}`,
-          },
+            Authorization: `Bearer ${token}`
+          }
         });
         setUser(response.data);
         setFormData({
-          firstname: response.data.firstname || "",
-          lastname: response.data.lastname || "",
-          username: response.data.username || "",
-          email: response.data.email || "",
+          firstname: response.data.firstname || '',
+          lastname: response.data.lastname || '',
+          username: response.data.username || '',
+          email: response.data.email || ''
         });
       } catch (error) {
-        console.error("Error fetching user data:", error);
+        console.error('Error fetching user data:', error);
       }
     };
     fetchUserData();
   }, [token]);
-
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
   };
 
-
   const handleImageChange = (e) => {
     setProfileImage(e.target.files[0]);
   };
-
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -50,41 +47,40 @@ const Profile = () => {
       formDataToSend.append(key, formData[key]);
     });
     if (profileImage) {
-      formDataToSend.append("profile", profileImage);
+      formDataToSend.append('profile', profileImage);
     }
 
     try {
-      const response = await axios.put("/api/auth/user", formDataToSend, {
+      const response = await axios.put('/api/auth/user', formDataToSend, {
         headers: {
           Authorization: `Bearer ${token}`,
-          "Content-Type": "multipart/form-data",
-        },
+          'Content-Type': 'multipart/form-data'
+        }
       });
       setMessage(response.data.message);
     } catch (error) {
-      setMessage(error.response?.data?.message || "An error occurred");
+      setMessage(error.response?.data?.message || 'An error occurred');
     }
   };
 
-
   const handleDelete = async () => {
     const confirmDelete = window.confirm(
-      "Are you sure you want to delete your account? This action is irreversible."
+      'Are you sure you want to delete your account? This action is irreversible.'
     );
     if (confirmDelete) {
       try {
-        await axios.delete("/api/auth/user", {
+        await axios.delete('/api/auth/user', {
           headers: {
-            Authorization: `Bearer ${token}`,
-          },
+            Authorization: `Bearer ${token}`
+          }
         });
-        setMessage("Account deleted successfully. Redirecting...");
+        setMessage('Account deleted successfully. Redirecting...');
         setTimeout(() => {
-          localStorage.removeItem("token");
-          window.location.href = "/";
+          localStorage.removeItem('token');
+          window.location.href = '/';
         }, 2000);
       } catch (error) {
-        setMessage(error.response?.data?.message || "An error occurred");
+        setMessage(error.response?.data?.message || 'An error occurred');
       }
     }
   };
@@ -105,7 +101,7 @@ const Profile = () => {
         {/* Profile Image */}
         <div className="flex flex-col items-center mb-4">
           <img
-            src={`${apiUrl}/static/profile_images/${user.profile || "default.png"}`}
+            src={`${apiUrl}/static/profile_images/${user.profile || 'default.png'}`}
             alt="Profile"
             className="w-32 h-32 rounded-full mb-2 border-2 border-primary"
           />

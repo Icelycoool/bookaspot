@@ -1,33 +1,40 @@
-from flask import request, jsonify, make_response
-from flask_restx import fields, Resource, Namespace
-from flask_jwt_extended import jwt_required, get_jwt_identity
-from models import Amenity, User, Category, Media, Review
+from flask import jsonify, make_response, request
+from flask_jwt_extended import get_jwt_identity, jwt_required
+from flask_restx import Namespace, Resource, fields
 
+from models import Amenity, Category, Media, Review, User
 
-from .images import save_image, delete_image_file
+from .images import delete_image_file, save_image
 
 amenities_ns = Namespace("Amenities", description="Amenities management")
 
 # Media serialization model
-media_model = amenities_ns.model('Media', {
-    'id': fields.Integer(readonly=True),
-    'url': fields.String(),
-    'amenity_id': fields.Integer(),
-    'type': fields.String()
-})
+media_model = amenities_ns.model(
+    "Media",
+    {
+        "id": fields.Integer(readonly=True),
+        "url": fields.String(),
+        "amenity_id": fields.Integer(),
+        "type": fields.String(),
+    },
+)
 
 # Amenities serialization model
-amenities_model = amenities_ns.model('Amenity', {
-    'id': fields.Integer(readonly=True),
-    'name': fields.String(required=True),
-    'description': fields.String(required=True),
-    'price_per_hour': fields.Float(required=True),
-    'address': fields.String(required=True),
-    'category_id': fields.Integer(required=True),
-    'owner_id': fields.Integer(readonly=True)
-})
+amenities_model = amenities_ns.model(
+    "Amenity",
+    {
+        "id": fields.Integer(readonly=True),
+        "name": fields.String(required=True),
+        "description": fields.String(required=True),
+        "price_per_hour": fields.Float(required=True),
+        "address": fields.String(required=True),
+        "category_id": fields.Integer(required=True),
+        "owner_id": fields.Integer(readonly=True),
+    },
+)
 
-@amenities_ns.route('')
+
+@amenities_ns.route("")
 class AmenitiesListResource(Resource):
     # @amenities_ns.marshal_list_with(amenities_model)
     def get(self):
@@ -35,20 +42,26 @@ class AmenitiesListResource(Resource):
         amenities = Amenity.query.all()
         response = []
         for amenity in amenities:
-            avg_rating = sum(review.rating for review in amenity.reviews) / len(amenity.reviews) if amenity.reviews else 0
+            avg_rating = (
+                sum(review.rating for review in amenity.reviews) / len(amenity.reviews)
+                if amenity.reviews
+                else 0
+            )
             images = [media.url for media in amenity.images]
 
-            response.append({
-                "id": amenity.id,
-                "name": amenity.name,
-                "description": amenity.description,
-                "price_per_hour": amenity.price_per_hour,
-                "address": amenity.address,
-                "category_id": amenity.category_id,
-                "owner_id": amenity.owner_id,
-                "images": images,
-                "rating": avg_rating
-            })
+            response.append(
+                {
+                    "id": amenity.id,
+                    "name": amenity.name,
+                    "description": amenity.description,
+                    "price_per_hour": amenity.price_per_hour,
+                    "address": amenity.address,
+                    "category_id": amenity.category_id,
+                    "owner_id": amenity.owner_id,
+                    "images": images,
+                    "rating": avg_rating,
+                }
+            )
 
         return response, 200
 
@@ -59,34 +72,30 @@ class AmenitiesListResource(Resource):
         """Create a new amenity"""
         data = request.form.to_dict()
         user_id = get_jwt_identity()
-        category_name = data.get('category')
+        category_name = data.get("category")
         category = Category.query.filter_by(name=category_name).first()
 
         new_amenity = Amenity(
-            name=data.get('name'),
-            description=data.get('description'),
-            price_per_hour=data.get('price_per_hour'),
-            address=data.get('address'),
+            name=data.get("name"),
+            description=data.get("description"),
+            price_per_hour=data.get("price_per_hour"),
+            address=data.get("address"),
             category_id=category.id,
-            owner_id=user_id
+            owner_id=user_id,
         )
         new_amenity.save()
 
-        images = request.files.getlist('images')
+        images = request.files.getlist("images")
         for image in images:
             filename = save_image(image)
             if filename:
-                media = Media(
-                    url = filename,
-                    type = 'image',
-                    amenity_id = new_amenity.id
-                )
+                media = Media(url=filename, type="image", amenity_id=new_amenity.id)
                 media.save()
 
         return new_amenity, 201
 
 
-@amenities_ns.route('/<int:id>')
+@amenities_ns.route("/<int:id>")
 class AmenityResource(Resource):
 
     def get(self, id):
@@ -94,7 +103,8 @@ class AmenityResource(Resource):
 
         avg_rating = (
             sum(review.rating for review in amenity.reviews) / len(amenity.reviews)
-            if amenity.reviews else 0
+            if amenity.reviews
+            else 0
         )
         images = [media.url for media in amenity.images]
         response = {
@@ -122,35 +132,40 @@ class AmenityResource(Resource):
         # Update basic amenity data
         amenity_data = request.form.to_dict()
         amenity.update(
-            name=amenity_data.get('name'),
-            description=amenity_data.get('description'),
-            price_per_hour=float(amenity_data.get('price_per_hour')) if amenity_data.get('price_per_hour') else None,
-            address=amenity_data.get('address'),
-            category_id=int(amenity_data.get('category_id')) if amenity_data.get('category_id') else None
+            name=amenity_data.get("name"),
+            description=amenity_data.get("description"),
+            price_per_hour=(
+                float(amenity_data.get("price_per_hour"))
+                if amenity_data.get("price_per_hour")
+                else None
+            ),
+            address=amenity_data.get("address"),
+            category_id=(
+                int(amenity_data.get("category_id"))
+                if amenity_data.get("category_id")
+                else None
+            ),
         )
 
         # Handle image updates
-        if 'delete_all_images' in request.form and request.form['delete_all_images'].lower() == 'true':
+        if (
+            "delete_all_images" in request.form
+            and request.form["delete_all_images"].lower() == "true"
+        ):
             # Delete all existing images
             for media in amenity.images:
                 delete_image_file(media.file_path)
                 media.delete()
 
         # Add new images
-        images = request.files.getlist('images')
+        images = request.files.getlist("images")
         for image in images:
             filename = save_image(image)
             if filename:
-                media = Media(
-                    url=filename,
-                    amenity_id=amenity.id,
-                    type='image'
-                )
+                media = Media(url=filename, amenity_id=amenity.id, type="image")
                 media.save()
 
         return amenity, 200
-
-            
 
     @jwt_required()
     def delete(self, id):
@@ -159,7 +174,7 @@ class AmenityResource(Resource):
         user_id = get_jwt_identity()
 
         if amenity.owner_id != user_id:
-            amenity_ns.abort(403, message="Not authorized to delete this amenity")
+            amenities_ns.abort(403, message="Not authorized to delete this amenity")
 
         # Delete all associated images
         for media in amenity.images:
@@ -171,7 +186,8 @@ class AmenityResource(Resource):
 
         return make_response(jsonify({"message": "Amenity deleted successfully"}), 200)
 
-@amenities_ns.route('/categories')
+
+@amenities_ns.route("/categories")
 class AmenityResourceCategory(Resource):
     def get(self):
         """Fetches all the categories"""

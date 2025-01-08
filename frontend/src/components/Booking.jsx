@@ -1,26 +1,26 @@
-import React, { useState, useEffect } from "react";
-import axios from "axios";
-import { useSearchParams } from "react-router-dom";
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
+import { useSearchParams } from 'react-router-dom';
 
 const Booking = () => {
   const apiUrl = import.meta.env.VITE_API_BASE_URL;
   const [searchParams] = useSearchParams();
-  const amenityId = searchParams.get("amenityId");
-  
+  const amenityId = searchParams.get('amenityId');
+
   const [bookings, setBookings] = useState([]);
-  const [startDate, setStartDate] = useState("");
-  const [startTime, setStartTime] = useState("");
-  const [endDate, setEndDate] = useState("");
-  const [endTime, setEndTime] = useState("");
+  const [startDate, setStartDate] = useState('');
+  const [startTime, setStartTime] = useState('');
+  const [endDate, setEndDate] = useState('');
+  const [endTime, setEndTime] = useState('');
   const [isBookingFormVisible, setBookingFormVisible] = useState(true);
-  const [message, setMessage] = useState("");
+  const [message, setMessage] = useState('');
   const [amenityDetails, setAmenityDetails] = useState(null);
 
   useEffect(() => {
     if (amenityId) {
       axios.get(`${apiUrl}/api/amenities/${amenityId}`)
-        .then(response => setAmenityDetails(response.data))
-        .catch(error => console.error("Error fetching amenity details:", error));
+        .then((response) => setAmenityDetails(response.data))
+        .catch((error) => console.error('Error fetching amenity details:', error));
     }
     fetchBookings();
   }, [amenityId]);
@@ -29,19 +29,19 @@ const Booking = () => {
     try {
       const response = await axios.get(`${apiUrl}/api/booking`, {
         headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
+          Authorization: `Bearer ${localStorage.getItem('token')}`
+        }
       });
       setBookings(response.data);
     } catch (error) {
-      console.error("Error fetching bookings:", error);
-      setMessage(error.response?.data?.message || "Failed to fetch bookings.");
+      console.error('Error fetching bookings:', error);
+      setMessage(error.response?.data?.message || 'Failed to fetch bookings.');
     }
   };
 
   const handleCreateBooking = async () => {
     if (!startDate || !startTime || !endDate || !endTime) {
-      setMessage("Please fill in all date and time fields");
+      setMessage('Please fill in all date and time fields');
       return;
     }
 
@@ -49,31 +49,31 @@ const Booking = () => {
     const endDateTime = `${endDate}T${endTime}`;
 
     if (new Date(endDateTime) <= new Date(startDateTime)) {
-      setMessage("End time must be after start time");
+      setMessage('End time must be after start time');
       return;
     }
 
     const bookingData = {
       amenity_id: amenityId,
       start_date: startDateTime,
-      end_date: endDateTime,
+      end_date: endDateTime
     };
 
     try {
       await axios.post(`${apiUrl}/api/booking`, bookingData, {
         headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
+          Authorization: `Bearer ${localStorage.getItem('token')}`
+        }
       });
-      setMessage("Booking created successfully!");
+      setMessage('Booking created successfully!');
       fetchBookings();
-      setStartDate("");
-      setStartTime("");
-      setEndDate("");
-      setEndTime("");
+      setStartDate('');
+      setStartTime('');
+      setEndDate('');
+      setEndTime('');
     } catch (error) {
-      console.error("Error creating booking:", error);
-      setMessage(error.response?.data?.message || "Failed to create booking.");
+      console.error('Error creating booking:', error);
+      setMessage(error.response?.data?.message || 'Failed to create booking.');
     }
   };
 
@@ -81,14 +81,14 @@ const Booking = () => {
     try {
       await axios.delete(`${apiUrl}/api/booking/${bookingId}`, {
         headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
+          Authorization: `Bearer ${localStorage.getItem('token')}`
+        }
       });
-      setMessage("Booking deleted successfully!");
+      setMessage('Booking deleted successfully!');
       fetchBookings();
     } catch (error) {
-      console.error("Error deleting booking:", error);
-      setMessage(error.response?.data?.message || "Failed to delete booking.");
+      console.error('Error deleting booking:', error);
+      setMessage(error.response?.data?.message || 'Failed to delete booking.');
     }
   };
 
@@ -102,7 +102,7 @@ const Booking = () => {
         </div>
       )}
       {message && (
-        <p className={`text-center ${message.includes("success") ? "text-green-500" : "text-red-500"}`}>
+        <p className={`text-center ${message.includes('success') ? 'text-green-500' : 'text-red-500'}`}>
           {message}
         </p>
       )}

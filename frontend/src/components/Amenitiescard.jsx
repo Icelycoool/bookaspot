@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
-import axios from "axios";
+import React, { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
+import axios from 'axios';
 
 const Amenitiescard = () => {
-    const apiUrl = import.meta.env.VITE_API_BASE_URL;
-    const [amenities, setAmenities] = useState([]);
+  const apiUrl = import.meta.env.VITE_API_BASE_URL;
+  const [amenities, setAmenities] = useState([]);
 
   useEffect(() => {
     axios
@@ -14,10 +14,10 @@ const Amenitiescard = () => {
         if (Array.isArray(response.data)) {
           setAmenities(response.data);
         } else {
-          console.error("Unexpected API response format:", response.data);
+          console.error('Unexpected API response format:', response.data);
         }
       })
-      .catch((error) => console.error("Error fetching amenities:", error));
+      .catch((error) => console.error('Error fetching amenities:', error));
   }, [apiUrl]);
 
   return (
@@ -30,7 +30,7 @@ const Amenitiescard = () => {
               {amenity.images && amenity.images.length > 0 ? (
                 <img
                   src={`${apiUrl}/api/amenities_images/${amenity.images[0]}`}
-                  alt={amenity.name || "Amenity"}
+                  alt={amenity.name || 'Amenity'}
                   className="w-full h-full object-cover"
                 />
               ) : (
@@ -41,29 +41,29 @@ const Amenitiescard = () => {
             </div>
             <div className="p-4">
               <h3 className="text-lg font-bold text-gray-800"><Link
-                  to={`amenities/${amenity.id}`}
-                  className="text-primary hover:underline"
-                >
-                  {amenity.name || "Unknown"}
-                </Link></h3>
+                to={`amenities/${amenity.id}`}
+                className="text-primary hover:underline"
+              >
+                {amenity.name || 'Unknown'}
+              </Link></h3>
               <p className="text-sm text-gray-600">
-                {amenity.description || "No description available"}
+                {amenity.description || 'No description available'}
               </p>
               <div className="mt-2 flex justify-between items-center">
                 <span className="text-secondary text-lg font-semibold">
-                  KES{amenity.price_per_hour || "0.00"}/hr
+                  KES{amenity.price_per_hour || '0.00'}/hr
                 </span>
                 <div className="flex items-center space-x-1">
                   <span className="text-yellow-500 text-sm">⭐</span>
                   <span className="text-sm text-gray-600">
-                    {amenity.rating ? amenity.rating.toFixed(1) : "N/A"}
+                    {amenity.rating ? amenity.rating.toFixed(1) : 'N/A'}
                   </span>
                 </div>
               </div>
             </div>
           </div>
         ))}
-        </div>
+      </div>
     </div>
   );
 };

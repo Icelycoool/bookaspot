@@ -1,16 +1,16 @@
-import React, { useEffect, useState, useRef } from "react";
-import axios from "axios";
+import React, { useEffect, useRef, useState } from 'react';
+import axios from 'axios';
 
 const Categories = () => {
   const apiUrl = import.meta.env.VITE_API_BASE_URL;
   const [categories, setCategories] = useState([]);
   const categoryImages = {
-      "hall": "/hall.jpg",
-      "pool": "/pool.jpg",
-      "stadium": "/stadium.jpg",
-      "picnic site": "/picnicsite.jpg",
-      "conference room": "/conferencehall.jpg",
-      "indoor pitch": "/indoorpitch.jpg",
+    'hall': '/hall.jpg',
+    'pool': '/pool.jpg',
+    'stadium': '/stadium.jpg',
+    'picnic site': '/picnicsite.jpg',
+    'conference room': '/conferencehall.jpg',
+    'indoor pitch': '/indoorpitch.jpg'
   };
 
   useEffect(() => {
@@ -19,13 +19,12 @@ const Categories = () => {
         const response = await axios.get(`${apiUrl}/api/amenities/categories`);
         setCategories(response.data);
       } catch (error) {
-        console.error("Error fetching categories:", error);
+        console.error('Error fetching categories:', error);
       }
     };
 
     fetchCategories();
   }, []);
-
 
   return (
     <div className="container mx-auto px-4">
@@ -33,35 +32,35 @@ const Categories = () => {
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 p-4">
         {/* Scrollable Categories */}
-          {categories.length > 0 ? (
-            categories.map((category) => (
-              <div
-                key={category.id}
-                className="min-w-[250px] h-[150px] flex-shrink-0 bg-cover bg-center rounded-lg shadow-md relative zoom-image"
-                style={{ backgroundImage: `url(${categoryImages[category.name]})` }}
-              >
-                <div className="absolute text-offwhite shadow-sm inset-0 bg-black bg-opacity-95 rounded-lg flex flex-col justify-center items-center">
-                  <h3 className="text-white text-lg font-semibold uppercase">
-                    {category.name}
-                  </h3>
-                  <button
-                    onClick={() =>
-                      window.location.href = `/discover/${category.id}`
-                    }
-                    className="mt-2 px-4 py-2 text-white font-medium rounded-full hover:bg-primary hover:text-white transition-all"
-                  >
+        {categories.length > 0 ? (
+          categories.map((category) => (
+            <div
+              key={category.id}
+              className="min-w-[250px] h-[150px] flex-shrink-0 bg-cover bg-center rounded-lg shadow-md relative zoom-image"
+              style={{ backgroundImage: `url(${categoryImages[category.name]})` }}
+            >
+              <div className="absolute text-offwhite shadow-sm inset-0 bg-black bg-opacity-95 rounded-lg flex flex-col justify-center items-center">
+                <h3 className="text-white text-lg font-semibold uppercase">
+                  {category.name}
+                </h3>
+                <button
+                  onClick={() =>
+                    window.location.href = `/discover/${category.id}`
+                  }
+                  className="mt-2 px-4 py-2 text-white font-medium rounded-full hover:bg-primary hover:text-white transition-all"
+                >
                     Learn More
-                  </button>
-                </div>
+                </button>
               </div>
-            ))
-          ) : (
-            <p className="text-center text-gray-500 w-full">
+            </div>
+          ))
+        ) : (
+          <p className="text-center text-gray-500 w-full">
               No categories available at the moment.
-            </p>
-          )}
-        </div>
+          </p>
+        )}
       </div>
+    </div>
   );
 };
 

@@ -1,13 +1,14 @@
-import React, { useState, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import logo from "../assets/logo.svg";
-import  placeholderProfile from "/placeholderProfile.png";
+import React, { useEffect, useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import logo from '../assets/logo.svg';
+import placeholderProfile from '/placeholderProfile.png';
 
 const Nav = () => {
   const apiUrl = import.meta.env.VITE_API_BASE_URL;
   const [isOpen, setIsOpen] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [userProfile, setUserProfile] = useState(null);
+  const [isOwner, setIsOwner] = useState(false);
   const navigate = useNavigate();
 
   const toggleMenu = () => {
@@ -15,23 +16,26 @@ const Nav = () => {
   };
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
-    const profile = localStorage.getItem("profile");
+    const token = localStorage.getItem('token');
+    const profile = localStorage.getItem('profile');
+    const ownerStatus = localStorage.getItem('owner') === 'true';
 
     if (token && profile) {
       setIsLoggedIn(true);
       setUserProfile(profile);
+      setIsOwner(ownerStatus); // Set owner status
     }
   }, []);
 
-
   const handleLogout = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("username");
-    localStorage.removeItem("profile");
+    localStorage.removeItem('token');
+    localStorage.removeItem('username');
+    localStorage.removeItem('profile');
+    localStorage.removeItem('owner');
     setIsLoggedIn(false);
     setUserProfile(null);
-    navigate("/login");
+    setIsOwner(false);
+    navigate('/login');
   };
 
   return (
@@ -40,31 +44,48 @@ const Nav = () => {
         {/* Logo */}
         <div className="flex items-center space-x-2">
           <img className="w-10 h-10" src={logo} alt="Bookaspot logo" />
-          <Link className="text-primary text-2xl font-bold" to="/">Bookaspot</Link>
+          <Link className="text-primary text-2xl font-bold" to="/">
+            Bookaspot
+          </Link>
         </div>
 
         <div className="hidden md:flex space-x-4">
           {!isLoggedIn ? (
             <>
               <Link to="/signup">
-                <button className="px-6 py-2 bg-secondary text-offwhite rounded-full shadow-sm hover:bg-secondaryHover focus:ring-2 focus:ring-secondaryHover-500">Sign Up</button>
+                <button className="px-6 py-2 bg-secondary text-offwhite rounded-full shadow-sm hover:bg-secondaryHover focus:ring-2 focus:ring-secondaryHover-500">
+                  Sign Up
+                </button>
               </Link>
               <Link to="/login">
-                <button className="px-6 py-2 border bg-primary text-offwhite rounded-full shadow-sm hover:bg-primaryHover focus:ring-2 focus:ring-primaryHover-500">Login</button>
+                <button className="px-6 py-2 border bg-primary text-offwhite rounded-full shadow-sm hover:bg-primaryHover focus:ring-2 focus:ring-primaryHover-500">
+                  Login
+                </button>
               </Link>
             </>
           ) : (
             <>
-                <div className="flex items-center space-x-4">
+              {isOwner && (
+                <Link
+                  to="/amenities"
+                  className="px-6 py-2 text-primary hover:underline"
+                >
+                  My Amenities
+                </Link>
+              )}
+              <div className="flex items-center space-x-4">
                 <Link to="/profile">
-                  {userProfile && userProfile !== "null" ? (
+                  {userProfile && userProfile !== 'null' ? (
                     <img
                       src={`${apiUrl}/api/profile_images/${userProfile}`}
                       alt="User Profile"
                       className="w-12 h-12 rounded-full"
                     />
                   ) : (
-                    <img src={placeholderProfile} className="w-12 h-12 rounded-full"/>
+                    <img
+                      src={placeholderProfile}
+                      className="w-12 h-12 rounded-full"
+                    />
                   )}
                 </Link>
                 <button
@@ -95,7 +116,9 @@ const Nav = () => {
                 strokeLinecap="round"
                 strokeLinejoin="round"
                 strokeWidth={2}
-                d={isOpen ? "M6 18L18 6M6 6l12 12" : "M4 6h16M4 12h16M4 18h16"}
+                d={
+                  isOpen ? 'M6 18L18 6M6 6l12 12' : 'M4 6h16M4 12h16M4 18h16'
+                }
               />
             </svg>
           </button>
@@ -107,12 +130,38 @@ const Nav = () => {
         <div className="md:hidden bg-offwhite-500 shadow-md">
           {!isLoggedIn ? (
             <>
-              <Link to="/signup" className="block px-4 py-2 hover:bg-secondary" onClick={toggleMenu}>Sign Up</Link>
-              <Link to="/login" className="block px-4 py-2 hover:bg-secondary" onClick={toggleMenu}>Login</Link>
+              <Link
+                to="/signup"
+                className="block px-4 py-2 hover:bg-secondary"
+                onClick={toggleMenu}
+              >
+                Sign Up
+              </Link>
+              <Link
+                to="/login"
+                className="block px-4 py-2 hover:bg-secondary"
+                onClick={toggleMenu}
+              >
+                Login
+              </Link>
             </>
           ) : (
             <>
-              <Link to="/profile" className="px-4 py-2 block text-center text-primary hover:text-primaryHover hover:underline"> Profile </Link>
+              {isOwner && (
+                <Link
+                  to="/my-amenities"
+                  className="block px-4 py-2 text-center text-primary hover:text-primaryHover hover:underline"
+                  onClick={toggleMenu}
+                >
+                  My Amenities
+                </Link>
+              )}
+              <Link
+                to="/profile"
+                className="px-4 py-2 block text-center text-primary hover:text-primaryHover hover:underline"
+              >
+                Profile
+              </Link>
               <button
                 onClick={handleLogout}
                 className="block w-full px-4 py-2 bg-secondary text-offwhite rounded-full hover:bg-secondaryHover"

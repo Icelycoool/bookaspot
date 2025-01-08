@@ -1,9 +1,11 @@
 from datetime import datetime
+
 from exts import db
 
 
 class Media(db.Model):
     """Defines a media model"""
+
     __tablename__ = "media"
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True, nullable=False)

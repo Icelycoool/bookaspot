@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
-import axios from "axios";
+import React, { useEffect, useState } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
+import axios from 'axios';
 
 const AmenityDetails = () => {
   const { id } = useParams();
@@ -10,20 +10,20 @@ const AmenityDetails = () => {
   const [amenity, setAmenity] = useState(null);
   const [reviews, setReviews] = useState([]);
   const [newReview, setNewReview] = useState({
-    comment: "",
-    rating: 0,
+    comment: '',
+    rating: 0
   });
 
   useEffect(() => {
     axios
       .get(`${apiUrl}/api/amenities/${id}`)
       .then((response) => setAmenity(response.data))
-      .catch((error) => console.error("Error fetching amenity details:", error));
+      .catch((error) => console.error('Error fetching amenity details:', error));
 
     axios
       .get(`${apiUrl}/api/reviews/amenity/${id}`)
       .then((response) => setReviews(response.data))
-      .catch((error) => console.error("Error fetching reviews:", error));
+      .catch((error) => console.error('Error fetching reviews:', error));
   }, [id, apiUrl]);
 
   const handleReviewSubmit = (e) => {
@@ -31,20 +31,20 @@ const AmenityDetails = () => {
     const reviewData = {
       amenity_id: id,
       rating: newReview.rating,
-      comment: newReview.comment,
+      comment: newReview.comment
     };
 
     axios
       .post(`${apiUrl}/api/reviews`, reviewData, {
         headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
+          Authorization: `Bearer ${localStorage.getItem('token')}`
+        }
       })
       .then((response) => {
         setReviews((prevReviews) => [...prevReviews, response.data]);
-        setNewReview({ comment: "", rating: 0 });
+        setNewReview({ comment: '', rating: 0 });
       })
-      .catch((error) => console.error("Error submitting review:", error));
+      .catch((error) => console.error('Error submitting review:', error));
   };
 
   const handleBookNow = () => {
@@ -77,7 +77,7 @@ const AmenityDetails = () => {
             <div className="mt-4 flex items-center space-x-2">
               <span className="text-yellow-500 text-xl">⭐</span>
               <span className="text-gray-600 text-lg">
-                {amenity.rating ? amenity.rating.toFixed(1) : "N/A"}
+                {amenity.rating ? amenity.rating.toFixed(1) : 'N/A'}
               </span>
             </div>
             {/* Display the price per hour */}

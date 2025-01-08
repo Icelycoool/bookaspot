@@ -1,15 +1,15 @@
-import Hero from "./Hero"
-import Categories from "./Categories"
-import Amenitiescard from "./Amenitiescard"
+import Hero from './Hero';
+import Categories from './Categories';
+import Amenitiescard from './Amenitiescard';
 
 const Landing = () => {
-    return (
+  return (
     <div className="mb-32">
-            <Hero />
-            <Categories />
-            <Amenitiescard />
-        </div>
-    )
-}
+      <Hero />
+      <Categories />
+      <Amenitiescard />
+    </div>
+  );
+};
 
-export default Landing
+export default Landing;
