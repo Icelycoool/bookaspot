@@ -189,6 +189,12 @@ class AmenityResource(Resource):
 
 @amenities_ns.route("/categories")
 class AmenityResourceCategory(Resource):
+    def post(self):
+        data = request.get_json()
+        new_category =  Category (name=data.get('category'))
+        new_category.save()
+        return make_response(jsonify({"message": "Successfully created new category!"}), 200)
+
     def get(self):
         """Fetches all the categories"""
         categories = Category.query.all()
