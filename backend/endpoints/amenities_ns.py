@@ -191,7 +191,7 @@ class AmenityResource(Resource):
 class AmenityResourceCategory(Resource):
     def post(self):
         data = request.get_json()
-        new_category =  Category (name=data.get('category'))
+        new_category =  Category (name=data.get('name'))
         new_category.save()
         return make_response(jsonify({"message": "Successfully created new category!"}), 200)
 

@@ -12,7 +12,7 @@ const Profile = () => {
   useEffect(() => {
     const fetchUserData = async () => {
       try {
-        const response = await axios.get('/api/auth/user', {
+        const response = await axios.get(`${apiUrl}/api/auth/user`, {
           headers: {
             Authorization: `Bearer ${token}`
           }
@@ -51,7 +51,7 @@ const Profile = () => {
     }
 
     try {
-      const response = await axios.put('/api/auth/user', formDataToSend, {
+      const response = await axios.put(`${apiUrl}/api/auth/user`, formDataToSend, {
         headers: {
           Authorization: `Bearer ${token}`,
           'Content-Type': 'multipart/form-data'
@@ -69,7 +69,7 @@ const Profile = () => {
     );
     if (confirmDelete) {
       try {
-        await axios.delete('/api/auth/user', {
+        await axios.delete(`${apiUrl}/api/auth/user`, {
           headers: {
             Authorization: `Bearer ${token}`
           }
